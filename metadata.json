@@ -1,0 +1,6 @@
+{
+  "name": "IPL Auction Arena",
+  "description": "Build your franchise. Outsmart the rivals. Win the auction. Real-time multiplayer and AI-driven IPL cricket auction simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

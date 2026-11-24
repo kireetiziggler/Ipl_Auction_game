@@ -1,0 +1,235 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 0: Default-deny global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ==================== PRIMITIVES ====================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isVerifiedOwner(userId) {
+      return isVerifiedUser() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidFranchise(fid) {
+      return fid is string && fid in ['CSK', 'MI', 'RCB', 'KKR', 'SRH', 'RR', 'DC', 'PBKS', 'GT', 'LSG'];
+    }
+
+    function isValidGameMode(m) {
+      return m is string && m in ['SOLO', 'MULTIPLAYER', 'QUICK', 'FULL', 'PRACTICE', 'TOURNAMENT'];
+    }
+
+    function isValidDifficulty(d) {
+      return d is string && d in ['EASY', 'NORMAL', 'HARD', 'EXPERT'];
+    }
+
+    // ==================== VALIDATION BLUEPRINTS ====================
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll([
+          'uid',
+          'username',
+          'favoriteFranchise',
+          'auctionsPlayed',
+          'auctionsWon',
+          'bestRating',
+          'avgRating',
+          'tournamentsWon',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'uid',
+          'username',
+          'favoriteFranchise',
+          'auctionsPlayed',
+          'auctionsWon',
+          'bestRating',
+          'avgRating',
+          'tournamentsWon',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.uid is string
+        && isValidId(data.uid)
+        && data.uid == request.auth.uid
+        && data.uid == userId
+        && data.username is string
+        && data.username.size() >= 2
+        && data.username.size() <= 40
+        && isValidFranchise(data.favoriteFranchise)
+        && data.auctionsPlayed is int
+        && data.auctionsPlayed >= 0
+        && data.auctionsPlayed <= 100000
+        && data.auctionsWon is int
+        && data.auctionsWon >= 0
+        && data.auctionsWon <= data.auctionsPlayed
+        && data.bestRating is int
+        && data.bestRating >= 0
+        && data.bestRating <= 100
+        && data.avgRating is int
+        && data.avgRating >= 0
+        && data.avgRating <= 100
+        && data.tournamentsWon is int
+        && data.tournamentsWon >= 0
+        && data.tournamentsWon <= 10000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidAuctionHistory(data, userId, auctionId) {
+      return data.keys().hasAll([
+          'id',
+          'userId',
+          'roomCode',
+          'completedAt',
+          'mode',
+          'rulesetName',
+          'aiDifficulty',
+          'userFranchiseId',
+          'winnerFranchiseId',
+          'userScore',
+          'winnerScore',
+          'userRank',
+          'userSquadPlayerIds',
+          'userPlayingXIIds',
+          'leaderboardSummary',
+          'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'id',
+          'userId',
+          'roomCode',
+          'completedAt',
+          'mode',
+          'rulesetName',
+          'aiDifficulty',
+          'userFranchiseId',
+          'winnerFranchiseId',
+          'userScore',
+          'winnerScore',
+          'userRank',
+          'userSquadPlayerIds',
+          'userPlayingXIIds',
+          'leaderboardSummary',
+          'createdAt'
+        ])
+        && isValidId(data.id)
+        && data.id == auctionId
+        && isValidId(data.userId)
+        && data.userId == request.auth.uid
+        && data.userId == userId
+        && data.roomCode is string
+        && data.roomCode.size() >= 4
+        && data.roomCode.size() <= 16
+        && data.completedAt is int
+        && data.completedAt > 0
+        && isValidGameMode(data.mode)
+        && data.rulesetName is string
+        && data.rulesetName.size() >= 2
+        && data.rulesetName.size() <= 80
+        && isValidDifficulty(data.aiDifficulty)
+        && isValidFranchise(data.userFranchiseId)
+        && isValidFranchise(data.winnerFranchiseId)
+        && (data.userScore is int || data.userScore is float)
+        && data.userScore >= 0
+        && data.userScore <= 100
+        && (data.winnerScore is int || data.winnerScore is float)
+        && data.winnerScore >= 0
+        && data.winnerScore <= 100
+        && data.userRank is int
+        && data.userRank >= 1
+        && data.userRank <= 10
+        && data.userSquadPlayerIds is list
+        && data.userSquadPlayerIds.size() <= 25
+        && (data.userSquadPlayerIds.size() == 0 || data.userSquadPlayerIds[0] is string)
+        && data.userPlayingXIIds is list
+        && data.userPlayingXIIds.size() <= 11
+        && (data.userPlayingXIIds.size() == 0 || data.userPlayingXIIds[0] is string)
+        && data.leaderboardSummary is list
+        && data.leaderboardSummary.size() <= 10
+        && (data.leaderboardSummary.size() == 0 || data.leaderboardSummary[0] is map)
+        && data.createdAt is timestamp;
+    }
+
+    // ==================== COLLECTION RULES ====================
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow list: if false;
+
+      allow create: if isVerifiedOwner(userId)
+        && isValidId(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isVerifiedOwner(userId)
+        && isValidId(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'username',
+          'favoriteFranchise',
+          'auctionsPlayed',
+          'auctionsWon',
+          'bestRating',
+          'avgRating',
+          'tournamentsWon',
+          'updatedAt'
+        ]);
+
+      allow delete: if false;
+
+      // Subcollection: Private Auction History (Master Gate checks parent /users/{userId} exists)
+      match /auctions/{auctionId} {
+        allow get: if isValidId(userId)
+          && isValidId(auctionId)
+          && isOwner(userId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        allow list: if isOwner(userId)
+          && resource.data.userId == request.auth.uid;
+
+        allow create: if isVerifiedOwner(userId)
+          && isValidId(userId)
+          && isValidId(auctionId)
+          && isValidAuctionHistory(incoming(), userId, auctionId)
+          && incoming().createdAt == request.time
+          && exists(/databases/$(database)/documents/users/$(userId));
+
+        // Append-only completed auction records (terminal state lock)
+        allow update: if false;
+
+        allow delete: if isVerifiedOwner(userId)
+          && isValidId(userId)
+          && isValidId(auctionId)
+          && exists(/databases/$(database)/documents/users/$(userId));
+      }
+    }
+  }
+}

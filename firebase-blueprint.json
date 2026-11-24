@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "UserProfileDoc": {
+      "title": "UserProfileDoc",
+      "description": "Authenticated franchise owner profile and career auction statistics.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "favoriteFranchise": {
+          "type": "string",
+          "enum": ["CSK", "MI", "RCB", "KKR", "SRH", "RR", "DC", "PBKS", "GT", "LSG"]
+        },
+        "auctionsPlayed": {
+          "type": "integer"
+        },
+        "auctionsWon": {
+          "type": "integer"
+        },
+        "bestRating": {
+          "type": "integer"
+        },
+        "avgRating": {
+          "type": "integer"
+        },
+        "tournamentsWon": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "username",
+        "favoriteFranchise",
+        "auctionsPlayed",
+        "auctionsWon",
+        "bestRating",
+        "avgRating",
+        "tournamentsWon",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AuctionHistoryDoc": {
+      "title": "AuctionHistoryDoc",
+      "description": "Completed IPL Auction Arena session record saved to a user's cloud history.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "roomCode": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 16
+        },
+        "completedAt": {
+          "type": "integer"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["SOLO", "MULTIPLAYER", "QUICK", "FULL", "PRACTICE", "TOURNAMENT"]
+        },
+        "rulesetName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "aiDifficulty": {
+          "type": "string",
+          "enum": ["EASY", "NORMAL", "HARD", "EXPERT"]
+        },
+        "userFranchiseId": {
+          "type": "string",
+          "enum": ["CSK", "MI", "RCB", "KKR", "SRH", "RR", "DC", "PBKS", "GT", "LSG"]
+        },
+        "winnerFranchiseId": {
+          "type": "string",
+          "enum": ["CSK", "MI", "RCB", "KKR", "SRH", "RR", "DC", "PBKS", "GT", "LSG"]
+        },
+        "userScore": {
+          "type": "number"
+        },
+        "winnerScore": {
+          "type": "number"
+        },
+        "userRank": {
+          "type": "integer"
+        },
+        "userSquadPlayerIds": {
+          "type": "array"
+        },
+        "userPlayingXIIds": {
+          "type": "array"
+        },
+        "leaderboardSummary": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "roomCode",
+        "completedAt",
+        "mode",
+        "rulesetName",
+        "aiDifficulty",
+        "userFranchiseId",
+        "winnerFranchiseId",
+        "userScore",
+        "winnerScore",
+        "userRank",
+        "userSquadPlayerIds",
+        "userPlayingXIIds",
+        "leaderboardSummary",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfileDoc" },
+      "description": "Private owner profile and career stats keyed by Firebase Auth UID."
+    },
+    "/users/{userId}/auctions/{auctionId}": {
+      "schema": { "$ref": "#/entities/AuctionHistoryDoc" },
+      "description": "Private completed auction history entries owned by the parent user."
+    }
+  }
+}

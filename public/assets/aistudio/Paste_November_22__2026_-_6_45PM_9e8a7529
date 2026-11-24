@@ -1,0 +1,2256 @@
+# MASTER PROJECT PROMPT — IPL AUCTION ARENA
+
+## Build a Complete, Production-Ready IPL Auction Simulator for Web, Android, and Multiplayer Gaming
+
+Act as a world-class game development studio, product design agency, and engineering team combined.
+
+Your expertise includes:
+
+- AAA game design
+- Sports game development
+- Mobile gaming UX
+- Full-stack development
+- React and TypeScript
+- Backend architecture
+- Multiplayer networking
+- AI simulation
+- Cricket analytics
+- Real-time systems
+- Database engineering
+- Android development
+- Google Play Store deployment
+- Cybersecurity
+- Performance optimization
+- QA automation
+- DevOps
+- Product branding
+
+Your responsibility is to DESIGN, IMPLEMENT, TEST, OPTIMIZE, and PREPARE FOR DEPLOYMENT a complete application called:
+
+# IPL AUCTION ARENA
+
+Tagline:
+
+**BUILD YOUR FRANCHISE. OUTSMART THE RIVALS. WIN THE AUCTION.**
+
+This application must be an immersive, realistic, premium-quality IPL auction simulator where users can become franchise owners, participate in player auctions, compete against intelligent AI franchises or friends, construct championship-winning squads, and compete through ratings, tournaments, and leaderboards.
+
+This is not a simple bidding website.
+
+It must feel like a real sports gaming experience.
+
+---
+
+# PART 1 — PRODUCT VISION
+
+Create an interactive IPL auction gaming ecosystem.
+
+Users should be able to:
+
+1. Select their IPL franchise.
+2. Choose an auction season and configurable ruleset.
+3. Play a solo auction against AI franchises.
+4. Create private multiplayer rooms.
+5. Invite friends using a link or room code.
+6. Compete with friends while AI manages unoccupied franchises.
+7. Bid for real cricket players.
+8. Analyze player statistics during bidding.
+9. Manage a limited franchise budget.
+10. Build a complete squad.
+11. React to strategic AI competitors.
+12. Experience an energetic female auctioneer.
+13. Receive live team analysis.
+14. Generate their best playing XI.
+15. Receive a comprehensive squad rating.
+16. See the auction winner leaderboard.
+17. Replay the auction.
+18. Compare their auction strategies.
+19. Participate in multi-auction tournaments.
+20. Save and revisit previous auctions.
+
+The experience should be exciting, strategic, competitive, replayable, and intuitive.
+
+The product should be designed to feel like a premium gaming application.
+
+---
+
+# PART 2 — BRAND AND VISUAL IDENTITY
+
+Create an original premium brand identity for IPL AUCTION ARENA.
+
+Do not simply copy the official IPL website, broadcast graphics, EA Sports interfaces, or another copyrighted game's design.
+
+Create an original sports gaming visual identity inspired by professional cricket auction environments.
+
+### Visual style
+
+- Dark stadium atmosphere
+- Midnight navy
+- Black
+- Deep purple
+- Electric blue
+- Gold accents
+- Premium metallic details
+- Neon lighting used selectively
+- Elegant typography
+- Glass panels used carefully
+- Stadium spotlights
+- Cinematic transitions
+- Player portraits
+- Animated auction stage
+- Realistic scoreboard layouts
+- Premium franchise cards
+- High-quality charts
+- Smooth micro-interactions
+
+### Quality target
+
+The UI should look comparable to a premium commercial sports gaming product.
+
+Avoid:
+
+- Generic templates
+- Generic admin dashboards
+- Excessive gradients
+- Excessive glassmorphism
+- Overloaded screens
+- Unnecessary animations
+- Low-quality icons
+- Inconsistent spacing
+- Fake functionality
+- Placeholder buttons
+- Unfinished screens
+
+Create a complete design system:
+
+- Color tokens
+- Typography
+- Spacing
+- Buttons
+- Cards
+- Modals
+- Bottom sheets
+- Navigation
+- Player cards
+- Franchise cards
+- Charts
+- Alerts
+- Toasts
+- Badges
+- Loading states
+- Empty states
+- Error states
+
+Use a consistent design system across all devices.
+
+---
+
+# PART 3 — CROSS-PLATFORM ARCHITECTURE
+
+Build one product with shared game logic and platform-specific interfaces where necessary.
+
+## Web application
+
+Use:
+
+- React
+- TypeScript
+- Next.js
+- Tailwind CSS
+- Lightweight animation libraries
+- Component-driven architecture
+
+Choose current stable and compatible versions at implementation time.
+
+## Backend
+
+Prefer:
+
+- Supabase
+- PostgreSQL
+- Supabase Authentication
+- Supabase Realtime
+- Secure server-side game operations
+- Edge Functions or backend APIs where appropriate
+
+## Android
+
+Use Capacitor to package the web application into an Android application.
+
+Prepare:
+
+- Android project
+- Application ID
+- App icon
+- Splash screen
+- Android permissions
+- Deep links
+- App links
+- Native sharing
+- Haptic feedback where appropriate
+- Push notifications architecture where appropriate
+- Android back button behavior
+- Fullscreen experience
+- Safe-area handling
+- Offline handling
+
+Keep the core game engine platform-independent.
+
+Architecture must allow future iOS packaging without rebuilding the game.
+
+## PWA
+
+Implement:
+
+- Installable PWA
+- Manifest
+- Icons
+- Splash screen
+- Service worker
+- Offline fallback
+- Caching strategy
+- App-like navigation
+- Install prompts
+- Update handling
+
+Users must be able to play through the browser without installing anything.
+
+---
+
+# PART 4 — IPL FRANCHISES
+
+Include the 10 franchises associated with the selected IPL season:
+
+- Chennai Super Kings — CSK
+- Mumbai Indians — MI
+- Royal Challengers Bengaluru — RCB
+- Kolkata Knight Riders — KKR
+- Sunrisers Hyderabad — SRH
+- Rajasthan Royals — RR
+- Delhi Capitals — DC
+- Punjab Kings — PBKS
+- Gujarat Titans — GT
+- Lucknow Super Giants — LSG
+
+Franchise information:
+
+- Team name
+- Abbreviation
+- Logo or permitted visual representation
+- Team colors
+- Franchise profile
+- Owner profile
+- Auction strategy
+- Current purse
+- Squad
+- Player count
+- Indian player count
+- Overseas player count
+- Role composition
+- Auction activity
+- Current bid status
+- Team rating
+
+Use official franchise visual assets only when permitted.
+
+Where licensing is unavailable, create original franchise-inspired colors and graphics.
+
+Do not falsely imply official endorsement.
+
+---
+
+# PART 5 — AUCTION SEASON AND RULES ENGINE
+
+Build a configurable rules engine.
+
+The game must support different auction seasons without requiring code changes.
+
+Create season configurations.
+
+Every ruleset should specify:
+
+- Auction season
+- Initial purse
+- Maximum squad size
+- Minimum squad size
+- Maximum overseas players
+- Playing XI overseas limit
+- Minimum player requirements
+- Base prices
+- Bid increments
+- Auction categories
+- Retention rules
+- RTM rules, if applicable
+- Auction order
+- Unsold player rules
+- Player re-entry rules
+- Squad restrictions
+
+Rules must be verified from available official sources whenever possible.
+
+Do not fabricate official IPL regulations.
+
+If rules cannot be verified, label the configuration:
+
+"Custom Simulation Rules"
+
+Provide editable rules.
+
+Include a default rules configuration for the chosen 2026 season only if reliable information is available.
+
+---
+
+# PART 6 — PLAYER DATABASE
+
+Build a comprehensive player database covering the player pool for the selected auction season.
+
+Include Indian and overseas players.
+
+Every player should have:
+
+- Unique player ID
+- Full name
+- Portrait
+- Nationality
+- Country
+- Age
+- Batting style
+- Bowling style
+- Primary role
+- Secondary role
+- IPL history
+- Previous franchises
+- Auction category
+- Base price
+- IPL matches
+- Runs
+- Batting average
+- Strike rate
+- Highest score
+- 50s
+- 100s
+- Wickets
+- Bowling average
+- Economy
+- Bowling strike rate
+- Best bowling
+- Catches
+- Recent performance
+- Season-by-season statistics
+- T20 statistics where available
+- Player ratings
+- Estimated player value
+- Data source
+- Last updated date
+
+Player roles:
+
+- Batter
+- Top-order batter
+- Middle-order batter
+- Finisher
+- Wicketkeeper
+- Wicketkeeper-batter
+- All-rounder
+- Pace all-rounder
+- Spin all-rounder
+- Fast bowler
+- Swing bowler
+- Death-over specialist
+- Powerplay specialist
+- Leg spinner
+- Off spinner
+- Left-arm spinner
+
+### Data integrity
+
+Never invent factual player statistics.
+
+Never fabricate the official auction list.
+
+Never claim unofficial information is official.
+
+Keep factual statistics separate from gameplay ratings.
+
+Player ratings are game-generated assessments, not official cricket statistics.
+
+Use a source field for each player record.
+
+Build a data update system.
+
+Support:
+
+- CSV import
+- JSON import
+- Admin data editor
+- Data validation
+- Duplicate detection
+- Missing information
+- Source tracking
+- Season tracking
+- Last updated timestamp
+
+The game must have a locally stored database so it does not depend on external data APIs during gameplay.
+
+---
+
+# PART 7 — PLAYER IMAGES
+
+Use real player photographs only from permitted, reliable sources.
+
+Do not scrape protected content in violation of website terms.
+
+Do not use unofficial sources that are unreliable or unsafe.
+
+Implement:
+
+- Image caching
+- Lazy loading
+- Image optimization
+- Responsive sizing
+- Blur placeholders
+- Portrait fallbacks
+- Broken image handling
+- Offline image fallback where practical
+
+Every player must have a visually attractive card even if a portrait is unavailable.
+
+Create original avatar fallback artwork.
+
+The application must never crash because of a missing portrait.
+
+---
+
+# PART 8 — PLAYER CARD EXPERIENCE
+
+Design premium player cards.
+
+Display:
+
+- Player portrait
+- Player name
+- Country flag
+- Nationality
+- Age
+- Role
+- Batting style
+- Bowling style
+- Base price
+- Auction category
+- Current price
+- Current bidder
+- Overall rating
+- Recent form
+- Relevant statistics
+
+Player cards should have:
+
+- Premium layout
+- Responsive dimensions
+- Smooth transitions
+- Role badges
+- Nationality
+- Rating indicator
+- Auction status
+
+Player detail modal or bottom sheet:
+
+- Career statistics
+- Recent seasons
+- Performance trends
+- Batting analysis
+- Bowling analysis
+- Strengths
+- Weaknesses
+- Team suitability
+- Estimated auction value
+- Bid history
+
+---
+
+# PART 9 — GAME MODES
+
+Create the following modes.
+
+## MODE 1: SOLO AUCTION
+
+The user controls one franchise.
+
+The remaining franchises are intelligent AI-controlled teams.
+
+The user must be able to:
+
+- Select franchise
+- Select ruleset
+- Select difficulty
+- Start auction
+- Bid
+- Pass
+- Nominate players
+- View player statistics
+- Manage squad
+- Complete auction
+- Receive final rating
+
+## MODE 2: MULTIPLAYER AUCTION
+
+Support:
+
+- 2 to 10 human players
+- Unique franchise allocation
+- AI-managed remaining franchises
+- Private room
+- Unique room code
+- Unique invite URL
+- Real-time bidding
+- Shared player auction
+- Synchronized timer
+- Synchronized bid history
+- Synchronized purse
+- Reconnection
+- Pause/resume
+- Host controls
+
+## MODE 3: QUICK AUCTION
+
+A faster experience with:
+
+- Shorter timer
+- Reduced player pool
+- Simplified bidding
+- Faster AI
+- Shorter voice announcements
+
+## MODE 4: FULL AUCTION
+
+Complete player pool.
+
+Full auction categories.
+
+Full auction rules.
+
+Complete squad construction.
+
+## MODE 5: PRACTICE MODE
+
+Users can practice bidding.
+
+No ranking.
+
+No competitive records.
+
+Allow users to learn auction strategies.
+
+## MODE 6: TOURNAMENT MODE
+
+Users compete across multiple auctions.
+
+Create:
+
+- Private tournaments
+- Friends tournaments
+- Multiple rounds
+- Point system
+- Tournament standings
+- Overall winner
+- Cumulative scores
+- Tournament history
+
+---
+
+# PART 10 — HOME SCREEN
+
+Create an immersive home screen.
+
+Hero:
+
+IPL AUCTION ARENA
+
+"Build your dream franchise."
+
+Main buttons:
+
+- PLAY SOLO
+- PLAY WITH FRIENDS
+- JOIN A ROOM
+- QUICK AUCTION
+- TOURNAMENT
+- PLAYER DATABASE
+- AUCTION HISTORY
+
+Include:
+
+- Animated stadium environment
+- Featured players
+- Featured franchises
+- Latest game
+- User profile
+- Statistics
+- Settings
+- Tutorial
+
+The home screen must load quickly.
+
+Do not use large autoplay videos.
+
+Use lightweight, optimized effects.
+
+---
+
+# PART 11 — AUCTION LOBBY
+
+Create a complete pre-auction lobby.
+
+Display:
+
+- Room code
+- Invite link
+- Host
+- Participants
+- Franchise selection
+- Ready status
+- AI teams
+- Ruleset
+- Auction season
+- Auction mode
+- AI difficulty
+- Player pool
+- Auction speed
+- Voice settings
+- Countdown
+
+Allow:
+
+- Copy room code
+- Copy invitation
+- WhatsApp sharing
+- Native mobile sharing
+- Change franchise
+- Leave room
+- Host start
+- Host settings
+
+Prevent duplicate franchise selection in multiplayer.
+
+Provide a countdown before auction starts.
+
+---
+
+# PART 12 — AUCTION ROOM
+
+This is the central experience.
+
+Create a cinematic auction room.
+
+## Main stage
+
+Show:
+
+- Current player
+- Player portrait
+- Name
+- Nationality
+- Role
+- Base price
+- Current highest bid
+- Current franchise
+- Countdown
+- Auctioneer captions
+- SOLD animation
+
+## Franchise panel
+
+Show all franchises:
+
+- Logo
+- Name
+- Remaining purse
+- Squad count
+- Overseas count
+- Current status
+- Current leading bid
+
+Highlight:
+
+- Leading bidder
+- Human franchises
+- AI franchises
+- Bidding activity
+
+## Player statistics panel
+
+Display:
+
+- IPL career statistics
+- Recent performance
+- Batting metrics
+- Bowling metrics
+- Player rating
+- Role
+- Estimated value
+
+## Bid controls
+
+Create:
+
+- BID button
+- PASS button
+- Bid increment selector
+- Maximum bid
+- Quick bid controls
+
+Controls must be easy to use on mobile.
+
+Prevent accidental bids.
+
+Provide clear confirmation feedback.
+
+The bidding button must be immediately accessible.
+
+---
+
+# PART 13 — REALISTIC AUCTION ENGINE
+
+Create an authoritative auction engine.
+
+Use a deterministic state machine.
+
+States:
+
+- Lobby
+- Ready
+- Starting
+- Nomination
+- Opening bid
+- Bidding
+- Countdown
+- Sold
+- Unsold
+- Next player
+- Paused
+- Completed
+
+The auction engine must support:
+
+- Player nomination
+- Opening price
+- Valid bid increments
+- Highest bidder
+- Bid timer
+- Countdown reset
+- Auction close
+- Sold
+- Unsold
+- Player re-entry
+- Bid history
+- Purse deduction
+- Squad assignment
+- Player ownership
+
+Prevent:
+
+- Invalid bids
+- Negative purse
+- Duplicate purchases
+- Multiple winning teams
+- Bids after close
+- Invalid timer transitions
+- Players being sold twice
+- Invalid overseas selections
+- Incomplete squads
+
+Use server-authoritative auction state.
+
+All critical auction operations must be validated on the backend.
+
+---
+
+# PART 14 — INTELLIGENT AI FRANCHISES
+
+AI must behave like different real franchise management teams.
+
+Create multiple strategic personalities.
+
+### Aggressive bidder
+
+- Pursues premium players
+- Enters bidding wars
+- Will spend heavily when player value justifies it
+
+### Value strategist
+
+- Looks for undervalued players
+- Avoids unnecessary bidding wars
+- Builds balanced squads
+
+### Batting specialist
+
+- Prioritizes top-order
+- Middle-order
+- Finishers
+- Wicketkeeper-batters
+
+### Bowling specialist
+
+- Prioritizes fast bowling
+- Death bowling
+- Powerplay bowling
+- Spinners
+
+### All-rounder specialist
+
+- Pursues versatile players
+
+### Youth strategist
+
+- Pursues young players
+- Prioritizes future potential
+
+### Superstar collector
+
+- Pursues marquee players
+
+### Budget strategist
+
+- Protects budget
+- Avoids overpaying
+- Targets bargains late
+
+### Balanced strategist
+
+- Follows realistic squad construction
+
+Each AI franchise must have:
+
+- Personality
+- Priorities
+- Preferred roles
+- Maximum price
+- Budget strategy
+- Risk tolerance
+- Squad requirements
+- Bidding behavior
+
+### AI decision engine
+
+Calculate:
+
+- Player quality
+- Team need
+- Role scarcity
+- Player value
+- Squad balance
+- Player potential
+- Recent performance
+- Age
+- Current bid
+- Remaining purse
+- Remaining squad slots
+- Overseas quota
+- Future auction opportunities
+- Rival demand
+- Budget pressure
+
+AI should determine:
+
+- Whether to bid
+- How much to bid
+- Maximum willingness to pay
+- Whether to continue
+- When to withdraw
+- When to preserve budget
+
+Implement:
+
+- Easy
+- Normal
+- Hard
+- Expert
+
+Difficulty changes decision quality and strategy.
+
+Do not cheat.
+
+Do not manipulate auction outcomes.
+
+Do not make AI bid randomly.
+
+Do not require paid LLM API calls.
+
+Use local/server-side strategic algorithms.
+
+---
+
+# PART 15 — AUCTION PSYCHOLOGY AND RIVAL REACTIONS
+
+Implement strategic bidding psychology.
+
+AI should analyze:
+
+- User bidding patterns
+- Aggressive bidding
+- Frequent bidding
+- Sudden withdrawal
+- Budget remaining
+- Preferred players
+- Previous purchases
+- User's squad weaknesses
+
+AI may react strategically.
+
+Examples:
+
+- If the user repeatedly pursues fast bowlers, AI may compete for scarce premium fast bowlers.
+- If the user has spent heavily, AI may stop competing against them.
+- If a player is overvalued, AI may withdraw.
+- If a franchise lacks a wicketkeeper, AI may prioritize one.
+- If only a few death bowlers remain, AI may value them more highly.
+- AI may avoid bidding wars when better alternatives are available.
+
+Implement a bidding psychology system based on strategic logic.
+
+Do not use paid AI APIs.
+
+---
+
+# PART 16 — AUCTIONEER VOICE
+
+Create a professional female auctioneer voice.
+
+Style:
+
+- Energetic
+- Natural
+- Clear
+- Professional
+- Confident
+- Exciting
+- Indian English-friendly
+- Sports presenter style
+
+## Welcome announcement
+
+"Welcome to IPL Auction Arena! The franchises are ready, the budgets are locked, and the battle to build a championship-winning team begins now!"
+
+## Franchise introductions
+
+Introduce participating franchises.
+
+## Player introductions
+
+Announce:
+
+- Player name
+- Nationality
+- Role
+- Base price
+- One interesting verified statistic
+
+Example:
+
+"Coming up next, a dangerous left-arm fast bowler! Arshdeep Singh! India international, specialist in the death overs. Base price: two crore rupees. Who will make the opening bid?"
+
+Only use verified statistics.
+
+## Bidding announcements
+
+Examples:
+
+"Chennai enters the bidding!"
+
+"Mumbai Indians raise the paddle!"
+
+"Royal Challengers Bengaluru are now leading!"
+
+"Going once!"
+
+"Going twice!"
+
+"SOLD!"
+
+"Unsold! This player may return later."
+
+## Voice controls
+
+- Enable/disable
+- Mute
+- Volume
+- Voice speed
+- Skip
+- Replay announcement
+- Caption display
+
+## Voice architecture
+
+Implement a provider-independent speech service.
+
+Priority:
+
+1. Free browser-native TTS
+2. Optional open-source/local voice solution
+3. Optional user-configured provider
+
+Voice must not block gameplay.
+
+Implement:
+
+- Announcement queue
+- No overlapping speech
+- Priority announcements
+- Bid announcements
+- Player announcements
+- Sold announcements
+- Error handling
+- Fallback
+
+If voice fails, auction continues.
+
+Use captions.
+
+Respect autoplay restrictions.
+
+Do not require a paid voice service.
+
+---
+
+# PART 17 — AUDIO AND STADIUM EXPERIENCE
+
+Add optional:
+
+- Stadium ambience
+- Crowd reactions
+- Bid sound
+- Countdown
+- SOLD sound
+- Unsold sound
+- Winning celebration
+- Auction room background music
+
+Use legally usable or original audio assets.
+
+Audio controls:
+
+- Master volume
+- Music volume
+- Effects volume
+- Voice volume
+- Mute
+- Disable music
+
+Avoid audio overlapping.
+
+Do not play audio before user interaction.
+
+Allow reduced audio mode.
+
+---
+
+# PART 18 — LIVE TEAM MANAGEMENT
+
+Display live squad analytics.
+
+Show:
+
+- Total players
+- Remaining purse
+- Amount spent
+- Indian players
+- Overseas players
+- Batters
+- Wicketkeepers
+- All-rounders
+- Fast bowlers
+- Spinners
+- Death bowlers
+- Powerplay specialists
+
+Analyze:
+
+- Opening pair
+- Top order
+- Middle order
+- Finishers
+- Wicketkeeper
+- All-rounders
+- Powerplay bowling
+- Death bowling
+- Spin attack
+- Overseas balance
+- Bench depth
+
+Show live suggestions:
+
+"Your team needs a reliable finisher."
+
+"Your squad lacks a specialist death bowler."
+
+"You have 5 squad positions remaining and ₹12 crore available."
+
+"Your batting depth is excellent. Consider strengthening your spin attack."
+
+Recommendations should update after every purchase.
+
+---
+
+# PART 19 — LIVE ANALYTICS
+
+Create a premium analytics screen.
+
+Show:
+
+- Overall rating
+- Batting rating
+- Bowling rating
+- All-round rating
+- Fielding rating
+- Squad balance
+- Overseas balance
+- Budget efficiency
+- Squad depth
+- Player potential
+- Role coverage
+
+Visualizations:
+
+- Radar chart
+- Player ranking
+- Role distribution
+- Budget distribution
+- Squad comparison
+- Franchise comparison
+
+Use transparent rating calculations.
+
+Do not claim official ratings.
+
+Clearly label generated game ratings.
+
+---
+
+# PART 20 — BEST PLAYING XI GENERATOR
+
+After the auction, automatically generate:
+
+- Best playing XI
+- Captain
+- Vice-captain
+- Wicketkeeper
+- Opening pair
+- Batting order
+- Middle order
+- Finisher
+- All-rounders
+- Bowling rotation
+- Powerplay bowlers
+- Death bowlers
+- Spin options
+- Impact Player
+
+Generate multiple lineup options:
+
+- Balanced XI
+- Batting-heavy XI
+- Bowling-heavy XI
+- Spin-focused XI
+- Pace-focused XI
+
+Allow manual changes.
+
+Explain why each player was selected.
+
+Validate the selected XI against the configured rules.
+
+Show the strongest squad combination.
+
+---
+
+# PART 21 — FINAL TEAM RATING
+
+Build a transparent 100-point evaluation system.
+
+Suggested weights:
+
+- Batting quality: 20
+- Bowling quality: 20
+- All-rounders: 15
+- Team balance: 15
+- Overseas balance: 10
+- Squad depth: 10
+- Budget efficiency: 10
+
+The weights must be configurable.
+
+Do not reward simply buying the most expensive players.
+
+Reward:
+
+- Balanced squad
+- Strong role coverage
+- Good value
+- Quality depth
+- Strong bowling
+- Strong batting
+- Versatility
+- Budget management
+
+Provide an explanation.
+
+Example:
+
+"Your squad scored 88/100. You built an excellent batting lineup, strong death bowling, and excellent budget efficiency. Your biggest weakness is experienced spin depth."
+
+---
+
+# PART 22 — AUCTION WINNER CEREMONY
+
+Create a cinematic final auction presentation.
+
+Show:
+
+- Franchise
+- Owner
+- Final squad
+- Overall rating
+- Total expenditure
+- Remaining purse
+- Highest-priced player
+- Best bargain
+- Best Indian purchase
+- Best overseas purchase
+- Best all-rounder
+- Best bowler
+- Best batter
+- Team strengths
+- Team weaknesses
+- Recommended playing XI
+
+Create:
+
+- Trophy animation
+- Confetti
+- Stadium lights
+- Victory sound
+- Premium transition
+- Winner reveal
+
+Do not make animations excessive.
+
+Support reduced motion.
+
+---
+
+# PART 23 — MULTIPLAYER LEADERBOARD
+
+Rank participants.
+
+Display:
+
+- Position
+- Franchise
+- Owner
+- Squad rating
+- Batting
+- Bowling
+- Balance
+- Budget efficiency
+- Best purchase
+- Weakest area
+
+Use:
+
+- Gold for first
+- Silver for second
+- Bronze for third
+
+Include:
+
+- Winner celebration
+- Shareable result card
+- Rematch
+- Replay auction
+- View squad
+- Compare teams
+
+---
+
+# PART 24 — AUCTION REPLAY
+
+Create a replay system.
+
+Save:
+
+- Every player nomination
+- Every bid
+- Bid timestamp
+- Bidder
+- Bid amount
+- AI decision
+- Player purchase
+- Auction state transitions
+
+Allow users to replay auctions.
+
+Features:
+
+- Timeline
+- Play
+- Pause
+- Speed control
+- Skip
+- Player filtering
+- Team filtering
+- Bid history
+- Auction highlights
+
+Allow users to review:
+
+- Missed players
+- Overpaid players
+- Bargains
+- Rival strategies
+- Budget decisions
+
+Create an auction analysis report.
+
+---
+
+# PART 25 — STRATEGY COMPARISON
+
+Allow users to compare their auction strategies.
+
+Compare:
+
+- Total spending
+- Player value
+- Squad quality
+- Squad balance
+- Budget efficiency
+- Highest bid
+- Average purchase price
+- Role coverage
+- AI decisions
+- Best opportunities missed
+
+Create a strategic summary:
+
+"You spent 18% more on batting than the average competitor."
+
+"Your best value acquisition was..."
+
+"You missed a premium death bowler who could have improved your bowling rating."
+
+Clearly distinguish game analysis from real cricket predictions.
+
+---
+
+# PART 26 — TOURNAMENT SYSTEM
+
+Create private tournament modes.
+
+Support:
+
+- 2 to 10 participants
+- Multiple auctions
+- Multiple rounds
+- Tournament points
+- Squad rating points
+- Budget efficiency points
+- Strategy points
+- Overall standings
+
+Tournament configuration:
+
+- Tournament name
+- Participants
+- Number of rounds
+- Auction format
+- Ruleset
+- AI difficulty
+- Scoring rules
+
+Display:
+
+- Tournament leaderboard
+- Round results
+- Total points
+- Winner
+- Tournament history
+
+Allow rematches.
+
+---
+
+# PART 27 — MULTIPLAYER REALTIME
+
+Implement reliable multiplayer.
+
+Use authoritative backend state.
+
+Synchronize:
+
+- Current player
+- Current auction
+- Current bid
+- Bidder
+- Countdown
+- Bid history
+- Purse
+- Squad
+- Player sold status
+- Auctioneer announcements
+- Room status
+
+Handle:
+
+- Simultaneous bids
+- Duplicate requests
+- Network latency
+- Disconnections
+- Reconnection
+- Host disconnect
+- Participant departure
+- Late joining
+- Countdown synchronization
+
+Use server timestamps.
+
+Use request IDs.
+
+Validate every bid.
+
+Prevent race conditions.
+
+If the host disconnects, support host reassignment or safe recovery.
+
+If a participant disconnects, allow reconnection.
+
+Provide connection status.
+
+---
+
+# PART 28 — AUTHENTICATION AND USER PROFILES
+
+Support:
+
+- Guest mode
+- Email authentication
+- Google authentication where configured
+- User profile
+- Username
+- Avatar
+- Favorite franchise
+- Saved auctions
+- Auction history
+- Tournament history
+- Best rating
+- Wins
+- Statistics
+
+Do not force registration before playing.
+
+Guest users should be able to play solo.
+
+Explain which features require an account.
+
+---
+
+# PART 29 — PLAYER DATABASE SEARCH
+
+Create a player database explorer.
+
+Search and filter:
+
+- Player name
+- Nationality
+- Indian
+- Overseas
+- Role
+- Batting style
+- Bowling style
+- Base price
+- Rating
+- Age
+- Statistics
+- Auction status
+
+Sort by:
+
+- Rating
+- Price
+- Runs
+- Average
+- Strike rate
+- Wickets
+- Economy
+- Age
+- Value
+
+Allow users to inspect players.
+
+Player search must be fast.
+
+Use optimized indexing and efficient queries.
+
+---
+
+# PART 30 — SETTINGS
+
+Create a complete settings page.
+
+Options:
+
+- Season
+- Ruleset
+- Auction mode
+- Purse
+- Squad size
+- Overseas limits
+- Bid increments
+- Countdown
+- AI difficulty
+- AI personalities
+- Auction speed
+- Nomination mode
+- Voice
+- Voice speed
+- Sound
+- Music
+- Animation
+- Reduced motion
+- Theme
+- Language
+- Privacy
+- Notifications
+
+Save settings.
+
+Provide reset defaults.
+
+---
+
+# PART 31 — PERFORMANCE
+
+Performance is critical.
+
+Optimize:
+
+- Initial load
+- Auction transitions
+- Mobile responsiveness
+- Player image loading
+- Search
+- Realtime
+- AI decisions
+- Database queries
+- Rendering
+- Memory
+- Animation
+
+Use:
+
+- Code splitting
+- Lazy loading
+- Virtualized lists
+- Optimized assets
+- Caching
+- Memoization where justified
+- Lightweight components
+- Efficient subscriptions
+- Debounced search
+- Indexed queries
+- Proper cleanup
+
+Target:
+
+- Smooth interactions
+- 60 FPS where supported
+- Responsive bid controls
+- No unnecessary refreshes
+- Minimal memory usage
+- Fast room joins
+- Fast player search
+- Reliable auction synchronization
+
+Do not sacrifice game fairness for performance.
+
+---
+
+# PART 32 — SECURITY
+
+Implement:
+
+- Authentication security
+- Secure room access
+- Server-side bid validation
+- Database security
+- Row Level Security
+- Input validation
+- Rate limiting
+- Duplicate request protection
+- Anti-cheat
+- Secure secrets
+- Access control
+- Safe file upload handling
+
+Never expose secrets in frontend source.
+
+Never trust client-provided:
+
+- Bid amount
+- Player ownership
+- Remaining purse
+- Winning bidder
+- Auction timer
+- Player sold status
+- Game state
+
+Critical auction actions must be validated by the backend.
+
+---
+
+# PART 33 — DATABASE
+
+Create a scalable relational schema.
+
+Tables/entities:
+
+- Users
+- Profiles
+- Franchises
+- Players
+- Player images
+- Player statistics
+- Auction seasons
+- Auction rules
+- Rooms
+- Room participants
+- Auction sessions
+- Auction state
+- Bids
+- Auction events
+- Team squads
+- Saved games
+- Game history
+- Tournament
+- Tournament participants
+- Tournament rounds
+- Tournament scores
+- Leaderboards
+
+Implement:
+
+- Proper indexes
+- Foreign keys
+- Transactions
+- Migrations
+- Seed data
+- RLS policies
+- Data validation
+
+Critical bidding operations should use transactional logic.
+
+---
+
+# PART 34 — ADMIN PANEL
+
+Create a protected administration panel.
+
+Allow authorized administrators to:
+
+- Manage players
+- Import player data
+- Update statistics
+- Update images
+- Manage seasons
+- Configure rules
+- Manage franchises
+- Validate datasets
+- Review data sources
+- Manage game settings
+
+Support CSV and JSON import.
+
+Create import templates.
+
+Prevent duplicate player records.
+
+---
+
+# PART 35 — ACCESSIBILITY
+
+Support:
+
+- Keyboard navigation
+- Screen readers
+- Focus states
+- High contrast
+- Readable typography
+- Color-blind-friendly indicators
+- Reduced motion
+- Accessible controls
+- Mobile screen readers
+
+Auction status must not be communicated through color alone.
+
+---
+
+# PART 36 — ERROR HANDLING
+
+The game must gracefully handle:
+
+- Missing player images
+- Voice failure
+- Audio failure
+- Internet failure
+- Realtime failure
+- AI failure
+- Database failure
+- Invalid bids
+- Duplicate requests
+- Empty player pool
+- Invalid player data
+- Disconnection
+- Reconnection
+
+Show understandable error messages.
+
+Provide retries.
+
+Preserve auction state.
+
+AI must have a safe fallback decision.
+
+Voice failure must never stop the auction.
+
+---
+
+# PART 37 — TESTING
+
+Create comprehensive automated testing.
+
+## Unit testing
+
+Test:
+
+- Bid validation
+- Purse calculation
+- Team composition
+- Player purchase
+- Overseas rules
+- AI logic
+- Rating logic
+- State machine
+- Countdown
+- Nomination
+- Player ownership
+
+## Integration testing
+
+Test:
+
+- Room creation
+- Room joining
+- Authentication
+- Start auction
+- Bidding
+- Sold player
+- Purse updates
+- Squad updates
+- Multiplayer synchronization
+- Reconnection
+- Save game
+- Replay
+- Tournament
+
+## End-to-end testing
+
+Use Playwright.
+
+Test:
+
+- Home screen
+- Solo auction
+- AI bidding
+- Multiplayer room
+- Invitation
+- Joining
+- Bidding
+- Winning
+- Auction completion
+- Rating
+- Leaderboard
+- Replay
+- Tournament
+- Mobile layouts
+- Android web view compatibility
+
+Test multiple simultaneous users.
+
+Test network latency.
+
+Test simultaneous bids.
+
+Test disconnections.
+
+Test low-end device responsiveness.
+
+Test image failure.
+
+Test voice failure.
+
+---
+
+# PART 38 — WEB DEPLOYMENT
+
+Prepare a production-ready deployment.
+
+Preferred:
+
+- Vercel
+- Supabase
+
+Create:
+
+- Production configuration
+- Environment variables
+- Environment example file
+- Database migrations
+- Seed script
+- Build script
+- Deployment documentation
+- Custom domain instructions
+- HTTPS
+- Error monitoring architecture
+- Logging
+- Backup strategy
+
+The application must be deployable using free tiers where possible.
+
+Do not introduce unnecessary paid services.
+
+Document all potential costs.
+
+---
+
+# PART 39 — ANDROID APP AND PLAY STORE PREPARATION
+
+Prepare a complete Android application using Capacitor.
+
+Deliver:
+
+- Android project
+- App name
+- Application ID
+- App icon
+- Splash screen
+- Adaptive icon
+- Screenshots
+- Store feature graphic
+- Store description
+- Short description
+- Privacy policy template
+- Terms of use template
+- Permission explanation
+- Data safety checklist
+- Play Store testing checklist
+- Release build configuration
+- Android App Bundle build instructions
+- Signing instructions
+- Deep-link configuration
+- Play Store deployment instructions
+
+The app must:
+
+- Work on supported Android devices
+- Handle back navigation
+- Handle safe areas
+- Handle network errors
+- Support app links
+- Support invitation links
+- Support mobile sharing
+- Avoid unnecessary permissions
+- Avoid crashes
+- Avoid blank screens
+- Avoid broken keyboard layouts
+
+Use a secure release configuration.
+
+Never commit signing keys.
+
+Never commit passwords.
+
+Prepare the app for Play Store review.
+
+Do not claim Play Store approval is guaranteed.
+
+---
+
+# PART 40 — PLAY STORE REQUIREMENTS AND LEGAL READINESS
+
+Before release, create a checklist for:
+
+- Google Play Developer account
+- Application signing
+- App Bundle
+- Privacy policy
+- Data safety declaration
+- App content questionnaire
+- Target Android API requirements
+- Required testing tracks
+- Screenshots
+- Feature graphic
+- Store listing
+- App permissions
+- User data handling
+- Account deletion if accounts are supported
+- Age rating
+- Copyright
+- Trademark
+- Player image rights
+- IPL-related branding restrictions
+
+Do not use copyrighted assets without permission.
+
+Do not falsely claim official IPL affiliation.
+
+Clearly state that the game is an unofficial fan-made simulation if applicable.
+
+Use appropriate disclaimers.
+
+---
+
+# PART 41 — FREE-FIRST REQUIREMENTS
+
+The game must be playable without paid APIs.
+
+Avoid:
+
+- Paid LLMs for AI franchises
+- Paid voice APIs as mandatory
+- Paid player databases
+- Paid multiplayer systems
+- Paid image services
+- Paid analytics services
+
+Use:
+
+- Local player database
+- Strategic rule-based AI
+- Free browser TTS
+- Free-tier backend
+- Original/legally usable audio
+- Local caching
+- Open-source libraries
+
+If a service has free-tier limitations, document them.
+
+Never create a feature that silently requires payment.
+
+---
+
+# PART 42 — DEVELOPMENT PROCESS
+
+Inspect the existing project first.
+
+Do not destroy existing useful code.
+
+If no project exists, initialize a suitable architecture.
+
+Build in phases.
+
+## PHASE 1 — ARCHITECTURE
+
+Create:
+
+- Project structure
+- Design system
+- Database schema
+- Game state architecture
+- Player data architecture
+- Auction state machine
+- AI architecture
+- Multiplayer architecture
+
+Then begin implementation.
+
+## PHASE 2 — CORE PLAYABLE GAME
+
+Build:
+
+- Home screen
+- Franchise selection
+- Player database
+- Auction room
+- Player cards
+- Bid controls
+- Auction engine
+- Purse
+- Squad
+- AI teams
+- Sold/unsold
+- Complete auction
+
+The game must be playable end-to-end.
+
+## PHASE 3 — PREMIUM EXPERIENCE
+
+Build:
+
+- Cinematic UI
+- Animations
+- Voice
+- Sounds
+- Statistics
+- Analytics
+- Team evaluation
+- Playing XI
+
+## PHASE 4 — MULTIPLAYER
+
+Build:
+
+- Rooms
+- Invitations
+- Real-time synchronization
+- Bidding
+- AI remaining teams
+- Reconnection
+- Fairness
+
+## PHASE 5 — COMPETITIVE FEATURES
+
+Build:
+
+- Leaderboard
+- Auction replay
+- Strategy comparison
+- Tournament mode
+- History
+- Shareable results
+
+## PHASE 6 — MOBILE
+
+Build:
+
+- Responsive layouts
+- PWA
+- Capacitor
+- Android integration
+- App icons
+- Splash screen
+- Deep links
+
+## PHASE 7 — QUALITY
+
+Run tests.
+
+Fix bugs.
+
+Optimize.
+
+Audit security.
+
+Audit mobile.
+
+Audit multiplayer.
+
+## PHASE 8 — DEPLOYMENT
+
+Deploy web application.
+
+Prepare Android release.
+
+Create complete documentation.
+
+---
+
+# PART 43 — ANTIGRAVITY EXECUTION RULES
+
+You must work as an autonomous coding agent.
+
+Do not stop at:
+
+- Planning
+- Wireframes
+- Mockups
+- Design proposals
+- Architecture documents
+
+You must create the actual application.
+
+Make reasonable engineering decisions independently.
+
+Do not repeatedly ask for permission for small decisions.
+
+Do not leave placeholders for essential features.
+
+Do not use fake buttons.
+
+Do not pretend features work when they do not.
+
+If a feature cannot be completed due to an external limitation, implement the best fallback and document the limitation.
+
+Use the available development tools.
+
+Inspect the application in a browser.
+
+Test the application.
+
+Fix errors.
+
+Run builds.
+
+Do not claim tests passed unless you actually ran them.
+
+Do not claim deployment succeeded unless it actually succeeded.
+
+Maintain a project progress file documenting:
+
+- Completed features
+- Remaining features
+- Known bugs
+- Testing status
+- Deployment status
+
+After each major milestone, ensure the existing product still works.
+
+---
+
+# PART 44 — FINAL DELIVERABLES
+
+Deliver the complete project:
+
+1. Production-quality web application
+2. Responsive mobile experience
+3. PWA
+4. Android application project
+5. Multiplayer
+6. Solo mode
+7. AI franchises
+8. AI auction psychology
+9. Player database
+10. Player statistics
+11. Player images
+12. Auction engine
+13. Female auctioneer
+14. Sound effects
+15. Team management
+16. Squad analytics
+17. Playing XI generator
+18. Team ratings
+19. Leaderboards
+20. Tournament mode
+21. Auction replay
+22. Strategy comparison
+23. Authentication
+24. Saved games
+25. Admin panel
+26. Database schema
+27. Migrations
+28. Seed data
+29. Unit tests
+30. Integration tests
+31. E2E tests
+32. Deployment configuration
+33. Android build configuration
+34. Play Store assets
+35. README
+36. Setup instructions
+37. Hosting instructions
+38. Android release instructions
+39. Troubleshooting
+40. Privacy policy template
+41. Terms of use template
+42. Data sources documentation
+
+---
+
+# PART 45 — DEFINITION OF DONE
+
+The project is only complete when I can successfully:
+
+### Web
+
+- Open the production website.
+- Play without registration.
+- Select a franchise.
+- Start a solo auction.
+- View real player information.
+- Hear the auctioneer.
+- See AI franchises bid intelligently.
+- Bid and pass.
+- Purchase players.
+- Manage my purse.
+- Build a squad.
+- Complete the auction.
+- View team ratings.
+- Generate my playing XI.
+- See the final leaderboard.
+
+### Multiplayer
+
+- Create a private room.
+- Generate an invite link.
+- Share the link.
+- Have friends join from their phones.
+- Assign franchises.
+- Start an auction.
+- Bid simultaneously.
+- See synchronized auction activity.
+- Have AI manage remaining teams.
+- Disconnect and reconnect.
+- Complete the auction.
+- Compare ratings.
+
+### Competitive
+
+- Replay an auction.
+- Review auction decisions.
+- Compare strategies.
+- Create a tournament.
+- Play multiple rounds.
+- View tournament leaderboard.
+
+### Mobile
+
+- Open in a mobile browser.
+- Install as PWA.
+- Play with responsive controls.
+- Use audio settings.
+- Use invitation links.
+- Package the Android app.
+- Generate a release build.
+
+### Deployment
+
+- Deploy the web application.
+- Configure backend.
+- Configure environment variables.
+- Run production tests.
+- Prepare Android App Bundle.
+- Prepare Play Store listing.
+- Complete release documentation.
+
+---
+
+# FINAL INSTRUCTION
+
+Start by inspecting the workspace.
+
+Produce a short architecture and implementation plan.
+
+Then begin coding immediately.
+
+Prioritize building a functional end-to-end game first.
+
+Progressively improve it into a premium experience.
+
+Make the application fast, realistic, immersive, strategic, multiplayer-ready, mobile-first, secure, and deployment-ready.
+
+The goal is to build the best IPL auction gaming experience possible.
+
+**Do not merely tell me how to build it. Build it.**
+
+**PROJECT NAME: IPL AUCTION ARENA**
+
+**TAGLINE: BUILD YOUR FRANCHISE. OUTSMART THE RIVALS. WIN THE AUCTION.**
