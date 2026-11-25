@@ -1,11 +1,11 @@
-import { ALL_FRANCHISE_IDS, FRANCHISE_MAP } from '../data/franchises';
-import { roundCr } from '../data/rulesets';
+import { ALL_FRANCHISE_IDS, FRANCHISE_MAP } from '../data/franchises.ts';
+import { roundCr } from '../data/rulesets.ts';
 import {
   getMaxAllowedBidCr,
   getRequiredNextBidCr,
   validateBid,
-} from './auctionStateMachine';
-import {
+} from './auctionStateMachine.ts';
+import type {
   AIDifficulty,
   AIPersonality,
   AuctionState,
@@ -13,7 +13,7 @@ import {
   Player,
   PrimaryRole,
   TeamState,
-} from './types';
+} from './types.ts';
 
 export interface AIBidDecision {
   shouldBid: boolean;

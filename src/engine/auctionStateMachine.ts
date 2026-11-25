@@ -1,7 +1,7 @@
-import { ALL_FRANCHISE_IDS, FRANCHISE_MAP } from '../data/franchises';
-import { DEFAULT_FRANCHISE_RETENTIONS, getPlayerRetentionCostCr } from '../data/retentions';
-import { formatCr, formatSpokenPrice, getNextBidIncrement, roundCr } from '../data/rulesets';
-import {
+import { ALL_FRANCHISE_IDS, FRANCHISE_MAP } from '../data/franchises.ts';
+import { DEFAULT_FRANCHISE_RETENTIONS, getPlayerRetentionCostCr } from '../data/retentions.ts';
+import { formatCr, formatSpokenPrice, getNextBidIncrement, roundCr } from '../data/rulesets.ts';
+import type {
   AIDifficulty,
   AuctionEvent,
   AuctionPhase,
@@ -15,7 +15,7 @@ import {
   RTMState,
   SeasonRuleset,
   TeamState,
-} from './types';
+} from './types.ts';
 
 export interface CreateAuctionOptions {
   roomId: string;

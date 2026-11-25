@@ -212,7 +212,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div>
               <div className="font-bold text-slate-900 dark:text-white">1. Franchise & Retentions</div>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                Pick your franchise and retain up to 6 core stars at exact IPL 2027 prices. Unused slots become live RTM cards.
+                Pick your franchise and retain up to 6 core stars at exact IPL 2026 prices. Unused slots become live RTM cards.
               </p>
             </div>
             <div>
@@ -265,7 +265,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {
               title: 'IPL 2027 Player Pool',
               meta: `${players.length} Players · All 12 Official Sets`,
-              desc: 'Scout every capped & uncapped cricketer with real IPL career stats, base prices, and IPL 2027 franchises.',
+              desc: 'Scout every capped & uncapped cricketer with real IPL career stats, base prices, and IPL 2026 teams & prices.',
               icon: Database,
               action: () => onNavigate('players'),
               cta: 'Scout Full Pool',
@@ -352,7 +352,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               Marquee Auction Headliners
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
-              Tap any cricketer to study their real IPL career record, recent form, and 2027 retention value.
+              Tap any cricketer to study their real IPL career record, recent form, and IPL 2026 price.
             </p>
           </div>
           <button
@@ -399,7 +399,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     {formatCr(player.basePriceCr)}
                   </span>
                   {' · '}
-                  2027{' '}
+                  2026{' '}
                   <span className="font-mono-num text-amber-500 font-bold">
                     {formatCr(getPlayerRetentionCostCr(player))}
                   </span>
@@ -417,7 +417,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             Select a Franchise to Lead
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
-            Each franchise brings its real IPL 2027 retention pool and a unique AI strategy persona.
+            Each franchise brings its latest IPL 2026 squad & trade pool and a unique AI strategy persona.
           </p>
         </div>
 

@@ -153,7 +153,7 @@ export const PlayerDatabaseView: React.FC<PlayerDatabaseViewProps> = ({
             onChange={(e) => toggleSort(e.target.value as SortKey)}
             className="w-full px-2.5 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white"
           >
-            <option value="ipl2026Price">Sort: IPL 2027 Price</option>
+            <option value="ipl2026Price">Sort: IPL 2026 Price</option>
             <option value="basePriceCr">Sort: Base Price</option>
             <option value="matches">Sort: Matches</option>
             <option value="runs">Sort: Career Runs</option>
@@ -173,7 +173,7 @@ export const PlayerDatabaseView: React.FC<PlayerDatabaseViewProps> = ({
               <tr>
                 <th className="py-3 px-4 font-semibold">Player</th>
                 <th className="py-3 px-3 font-semibold">IPL Auction Set</th>
-                <th className="py-3 px-3 font-semibold">2027 Team</th>
+                <th className="py-3 px-3 font-semibold">2026 Team</th>
                 <th className="py-3 px-3 font-semibold text-right cursor-pointer" onClick={() => toggleSort('matches')}>
                   Mat
                 </th>
@@ -193,7 +193,7 @@ export const PlayerDatabaseView: React.FC<PlayerDatabaseViewProps> = ({
                   Base
                 </th>
                 <th className="py-3 px-4 font-semibold text-right cursor-pointer" onClick={() => toggleSort('ipl2026Price')}>
-                  <span className="inline-flex items-center gap-1">2027 Price <ArrowUpDown className="w-3 h-3" /></span>
+                  <span className="inline-flex items-center gap-1">2026 Price <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
               </tr>
             </thead>

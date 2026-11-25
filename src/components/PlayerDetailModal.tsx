@@ -76,7 +76,7 @@ export const PlayerDetailModal: React.FC<PlayerDetailModalProps> = ({
                   </strong>
                 </span>
                 <span>
-                  IPL 2027 Ref Price:{' '}
+                  IPL 2026 Price:{' '}
                   <strong className="font-mono-num text-amber-500">
                     {formatCr(ref2026Price)}
                   </strong>

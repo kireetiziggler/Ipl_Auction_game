@@ -44,12 +44,34 @@ describe('IPL 2027 Complete 307-Player Pool, All 12 Sets & Min 14 Rulesets', () 
     for (const set of FULL_IPL_SET_ORDER) {
       expect(categories.has(set)).toBe(true);
     }
-    // Verify key IPL 2027 franchise trade/retention updates
+    // Verify key IPL 2026/Nov 2026 franchise trade & retention updates
     expect(playerMap['arshdeep-singh']?.ipl2025Franchise).toBe('MI');
     expect(playerMap['sanju-samson']?.ipl2025Franchise).toBe('CSK');
     expect(playerMap['hardik-pandya']?.ipl2025Franchise).toBe('PBKS');
     expect(playerMap['rishabh-pant']?.ipl2025Franchise).toBe('DC');
     expect(playerMap['kuldeep-yadav']?.ipl2025Franchise).toBe('LSG');
+    expect(playerMap['cameron-green']?.ipl2025Franchise).toBe('KKR');
+    expect(getPlayerRetentionCostCr(playerMap['cameron-green'])).toBe(25.2);
+    expect(playerMap['ravindra-jadeja']?.ipl2025Franchise).toBe('RR');
+    expect(getPlayerRetentionCostCr(playerMap['ravindra-jadeja'])).toBe(14);
+    expect(playerMap['venkatesh-iyer']?.ipl2025Franchise).toBe('RCB');
+    expect(getPlayerRetentionCostCr(playerMap['venkatesh-iyer'])).toBe(7);
+    expect(playerMap['prashant-veer']?.ipl2025Franchise).toBe('CSK');
+    expect(getPlayerRetentionCostCr(playerMap['prashant-veer'])).toBe(14.2);
+    expect(playerMap['kartik-sharma']?.ipl2025Franchise).toBe('CSK');
+    expect(getPlayerRetentionCostCr(playerMap['kartik-sharma'])).toBe(14.2);
+
+    // Verify officially retired / opted-out players are excluded
+    for (const retiredId of [
+      'ms-dhoni',
+      'ravichandran-ashwin',
+      'andre-russell',
+      'piyush-chawla',
+      'mohit-sharma',
+      'amit-mishra',
+    ]) {
+      expect(playerMap[retiredId]).toBeUndefined();
+    }
   });
 
   it('has no duplicate player IDs', () => {

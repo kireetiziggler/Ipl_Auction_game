@@ -124,7 +124,7 @@ export const RetentionRoomView: React.FC<RetentionRoomViewProps> = ({
                 {userFranchise.name} Retentions
               </h1>
               <p className="text-sm text-slate-300 mt-1.5 max-w-2xl">
-                Retain up to {maxRetentions} core players (max 5 capped, max 2 uncapped) at their exact IPL 2027 prices. Every unused retention slot converts into a live{' '}
+                Retain up to {maxRetentions} core players (max 5 capped, max 2 uncapped) at their exact IPL 2026 prices. Every unused retention slot converts into a live{' '}
                 <strong className="text-amber-300">Right To Match (RTM)</strong> card for released players!
               </p>
             </div>
@@ -137,7 +137,7 @@ export const RetentionRoomView: React.FC<RetentionRoomViewProps> = ({
               className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              Official 2027 List
+              Official 2026 List
             </button>
             <button
               type="button"
@@ -301,7 +301,7 @@ export const RetentionRoomView: React.FC<RetentionRoomViewProps> = ({
         <div className="lg:col-span-4 space-y-4">
           <div className="rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 p-5">
             <h2 className="font-display text-lg font-bold text-slate-900 dark:text-white mb-1">
-              Rival Franchises (IPL 2027 Locks)
+              Rival Franchises (2026 Squad Locks)
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Click any franchise to inspect their retained players, purse deduction, and RTM cards.
