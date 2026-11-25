@@ -9,7 +9,7 @@ interface ProfileAuthViewProps {
   cloudSyncLoading?: boolean;
   onGoogleSignIn: () => Promise<void>;
   onUpdateProfile: (patch: Partial<UserProfile>) => void;
-  onAuthSuccess: (profile: UserProfile, token: string) => void;
+  onAuthSuccess: (profile: UserProfile, token: string, sessionId?: string, expiresAt?: string) => void;
   onSignOut: () => Promise<void> | void;
 }
 
@@ -57,14 +57,23 @@ export const ProfileAuthView: React.FC<ProfileAuthViewProps> = ({
 
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'fetch',
+        },
         body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Authentication failed.');
       } else {
-        onAuthSuccess({ ...data.profile, authProvider: 'local' }, data.token);
+        onAuthSuccess(
+          { ...data.profile, authProvider: 'local' },
+          data.token,
+          data.sessionId,
+          data.expiresAt
+        );
         setPassword('');
       }
     } catch {
@@ -303,11 +312,11 @@ export const ProfileAuthView: React.FC<ProfileAuthViewProps> = ({
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-500">Password (6+ chars)</label>
+                <label className="text-xs font-semibold text-slate-500">Password (8+ chars)</label>
                 <input
                   type="password"
                   required
-                  minLength={6}
+                  minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-white"

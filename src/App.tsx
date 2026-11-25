@@ -59,6 +59,7 @@ import {
   updateCloudUserProfile,
 } from './services/firebase';
 import { ConnectionStatus, MultiplayerClient } from './services/multiplayerClient';
+import { sessionService } from './services/sessionService';
 import {
   DEFAULT_SETTINGS,
   deleteSavedAuction,
@@ -101,7 +102,8 @@ type AppPage =
   | 'admin';
 
 export default function App() {
-  const clientId = useMemo(() => getOrCreateClientId(), []);
+  const localClientId = useMemo(() => getOrCreateClientId(), []);
+  const [serverSessionId, setServerSessionId] = useState<string | null>(null);
 
   const [page, setPage] = useState<AppPage>('home');
   const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS);
@@ -119,6 +121,7 @@ export default function App() {
   const [auctionState, setAuctionState] = useState<AuctionState | null>(null);
   const [userFranchiseId, setUserFranchiseId] = useState<FranchiseId>('CSK');
   const [isMultiplayer, setIsMultiplayer] = useState(false);
+  const clientId = isMultiplayer && serverSessionId ? serverSessionId : localClientId;
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('DISCONNECTED');
   const [lastError, setLastError] = useState<string | null>(null);
   const [inspectedPlayer, setInspectedPlayer] = useState<Player | null>(null);
@@ -174,7 +177,29 @@ export default function App() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isLiveAuctionLocked]);
 
-  // Subscribe to Firebase Google Auth & hydrate cloud profile + history
+  // Bootstrap server-issued session (restores HttpOnly cookie session or creates Guest session)
+  useEffect(() => {
+    let active = true;
+    void sessionService
+      .ensureSession({
+        username: profile.username,
+        favoriteFranchise: profile.favoriteFranchise,
+      })
+      .then((info) => {
+        if (!active || !info) return;
+        setServerSessionId(info.sessionId);
+        if (info.token) setAuthToken(info.token);
+        if (!info.isGuest) {
+          setProfile((prev) => (prev.authProvider === 'google' ? prev : info.profile));
+        }
+      });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Subscribe to Firebase Google Auth & hydrate cloud profile + history + PostgreSQL session
   useEffect(() => {
     const unsubscribe = subscribeFirebaseAuth(async (fbUser) => {
       if (!fbUser) {
@@ -185,7 +210,18 @@ export default function App() {
       setFirebaseUid(fbUser.uid);
       setCloudSyncLoading(true);
       try {
-        const cloudProfile = await ensureCloudUserProfile(fbUser, profile.favoriteFranchise);
+        const [cloudProfile, idToken] = await Promise.all([
+          ensureCloudUserProfile(fbUser, profile.favoriteFranchise),
+          fbUser.getIdToken().catch(() => null),
+        ]);
+        if (idToken) {
+          const synced = await sessionService.syncFirebaseToken(idToken, cloudProfile.favoriteFranchise);
+          if (synced) {
+            setServerSessionId(synced.sessionId);
+            setAuthToken(synced.token);
+            mpClientRef.current?.updateSessionToken(synced.token);
+          }
+        }
         setProfile({
           ...cloudProfile,
           photoURL: fbUser.photoURL ?? undefined,
@@ -627,10 +663,21 @@ export default function App() {
     if (firebaseUid) {
       await signOutFirebase();
     }
+    await sessionService.logout();
     setAuthToken(null);
+    setServerSessionId(null);
     setFirebaseUid(null);
     setCloudSummaries([]);
-    setProfile(loadGuestProfile());
+    const guestProfile = loadGuestProfile();
+    setProfile(guestProfile);
+    const freshGuest = await sessionService.ensureSession({
+      username: guestProfile.username,
+      favoriteFranchise: guestProfile.favoriteFranchise,
+    });
+    if (freshGuest) {
+      setServerSessionId(freshGuest.sessionId);
+      setAuthToken(freshGuest.token);
+    }
     showToast('Signed out. Switched to Guest Mode.');
   };
 
@@ -641,6 +688,12 @@ export default function App() {
         saveGuestProfile(next);
       } else if (firebaseUid) {
         void updateCloudUserProfile(firebaseUid, next).catch(() => {});
+      }
+      if (patch.username !== undefined || patch.favoriteFranchise !== undefined) {
+        void sessionService.updateProfile({
+          username: next.username,
+          favoriteFranchise: next.favoriteFranchise,
+        });
       }
       return next;
     });
@@ -685,8 +738,17 @@ export default function App() {
     setConnectionStatus('DISCONNECTED');
   };
 
-  const connectToMultiplayerRoom = (roomCode: string, desiredFranchise?: FranchiseId) => {
+  const connectToMultiplayerRoom = async (roomCode: string, desiredFranchise?: FranchiseId) => {
     disconnectMultiplayer();
+    const session = await sessionService.ensureSession({
+      username: profile.username,
+      favoriteFranchise: profile.favoriteFranchise,
+    });
+    if (session) {
+      setServerSessionId(session.sessionId);
+      if (session.token) setAuthToken(session.token);
+    }
+
     setIsMultiplayer(true);
     setLastError(null);
     const client = new MultiplayerClient({
@@ -700,6 +762,21 @@ export default function App() {
         else setPage('auction');
       },
       onAssignedFranchise: (fid) => setUserFranchiseId(fid),
+      onSessionSynced: (sid) => setServerSessionId(sid),
+      onAuthExpired: async () => {
+        const refreshed =
+          (await sessionService.refreshSession()) ||
+          (await sessionService.ensureSession({
+            username: profile.username,
+            favoriteFranchise: profile.favoriteFranchise,
+          }));
+        if (refreshed) {
+          setServerSessionId(refreshed.sessionId);
+          setAuthToken(refreshed.token);
+          return refreshed.token;
+        }
+        return null;
+      },
       onError: (msg) => {
         setLastError(msg);
         showToast(msg);
@@ -708,7 +785,7 @@ export default function App() {
     mpClientRef.current = client;
     client.connect({
       roomCode,
-      clientId,
+      token: sessionService.getToken(),
       username: profile.username,
       franchiseId: desiredFranchise,
     });
@@ -718,13 +795,13 @@ export default function App() {
     audioService.unlock();
     voiceService.unlock();
     try {
-      const res = await fetch(`/api/rooms/${encodeURIComponent(code)}`);
+      const res = await sessionService.authFetch(`/api/rooms/${encodeURIComponent(code)}`);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         showToast(err.error || `Room ${code} not found.`);
         return;
       }
-      connectToMultiplayerRoom(code, profile.favoriteFranchise);
+      await connectToMultiplayerRoom(code, profile.favoriteFranchise);
     } catch {
       showToast('Could not connect to multiplayer server.');
     }
@@ -758,30 +835,42 @@ export default function App() {
 
     if (mode === 'MULTIPLAYER') {
       try {
-        const res = await fetch('/api/rooms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            clientId,
-            username: profile.username,
-            franchiseId: preselectedFranchise,
-            mode: 'MULTIPLAYER',
-            rulesetId,
-            aiDifficulty: difficulty,
-            nominationMode: settings.defaultNominationMode,
-            auctionSpeed: settings.defaultAuctionSpeed,
-          }),
+        const session = await sessionService.ensureSession({
+          username: profile.username,
+          favoriteFranchise: preselectedFranchise,
         });
-        const data = await res.json();
-        if (!res.ok) {
-          showToast(data.error || 'Could not create multiplayer room.');
+        if (!session) {
+          showToast('Could not establish server session. Starting local Solo Lobby instead.');
+        } else {
+          setServerSessionId(session.sessionId);
+          if (session.token) setAuthToken(session.token);
+          const res = await sessionService.authFetch('/api/rooms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: profile.username,
+              franchiseId: preselectedFranchise,
+              mode: 'MULTIPLAYER',
+              rulesetId,
+              aiDifficulty: difficulty,
+              nominationMode: settings.defaultNominationMode,
+              auctionSpeed: settings.defaultAuctionSpeed,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            showToast(data.error || 'Could not create multiplayer room.');
+            return;
+          }
+          if (data.hostSessionId) {
+            setServerSessionId(data.hostSessionId);
+          }
+          setUserFranchiseId(preselectedFranchise);
+          setAuctionState(data.state);
+          setPage('lobby');
+          await connectToMultiplayerRoom(data.roomCode, preselectedFranchise);
           return;
         }
-        setUserFranchiseId(preselectedFranchise);
-        setAuctionState(data.state);
-        setPage('lobby');
-        connectToMultiplayerRoom(data.roomCode, preselectedFranchise);
-        return;
       } catch {
         showToast('Multiplayer server unreachable. Starting local Solo Lobby instead.');
       }
@@ -1673,8 +1762,18 @@ export default function App() {
             cloudSyncLoading={cloudSyncLoading}
             onGoogleSignIn={handleGoogleSignIn}
             onUpdateProfile={handleUpdateProfile}
-            onAuthSuccess={(newProfile, token) => {
+            onAuthSuccess={(newProfile, token, sessionId, expiresAt) => {
               setAuthToken(token);
+              if (sessionId) {
+                setServerSessionId(sessionId);
+                sessionService.setSession({
+                  sessionId,
+                  token,
+                  isGuest: false,
+                  expiresAt: expiresAt || new Date(Date.now() + 7 * 86_400_000).toISOString(),
+                  profile: newProfile,
+                });
+              }
               setProfile(newProfile);
               showToast(`Welcome, ${newProfile.username}!`);
             }}

@@ -6,18 +6,26 @@ export interface MultiplayerCallbacks {
   onStatus: (status: ConnectionStatus) => void;
   onState: (state: AuctionState, eventType: string) => void;
   onAssignedFranchise: (franchiseId: FranchiseId) => void;
+  onSessionSynced?: (sessionId: string) => void;
+  onAuthExpired?: () => Promise<string | null>;
   onError: (message: string) => void;
 }
 
 export class MultiplayerClient {
   private ws: WebSocket | null = null;
   private roomCode = '';
-  private clientId = '';
+  private sessionToken: string | null = null;
   private username = '';
   private desiredFranchiseId?: FranchiseId;
   private callbacks: MultiplayerCallbacks;
   private reconnectTimer: number | null = null;
+  private heartbeatTimer: number | null = null;
+  private reconnectAttempt = 0;
   private manualClose = false;
+  private lastStateVersion = 0;
+  private pendingBidRequestId: string | null = null;
+  private pendingBidTimer: number | null = null;
+  private authRefreshInFlight = false;
 
   constructor(callbacks: MultiplayerCallbacks) {
     this.callbacks = callbacks;
@@ -25,26 +33,74 @@ export class MultiplayerClient {
 
   connect(params: {
     roomCode: string;
-    clientId: string;
+    token?: string | null;
     username: string;
     franchiseId?: FranchiseId;
   }): void {
     this.manualClose = false;
     this.roomCode = params.roomCode.toUpperCase();
-    this.clientId = params.clientId;
+    this.sessionToken = params.token ?? null;
     this.username = params.username;
     this.desiredFranchiseId = params.franchiseId;
+    this.reconnectAttempt = 0;
+    this.lastStateVersion = 0;
+    this.clearPendingBid();
     this.openSocket(false);
+  }
+
+  updateSessionToken(token: string | null): void {
+    this.sessionToken = token;
+  }
+
+  private clearPendingBid(): void {
+    this.pendingBidRequestId = null;
+    if (this.pendingBidTimer !== null) {
+      window.clearTimeout(this.pendingBidTimer);
+      this.pendingBidTimer = null;
+    }
+  }
+
+  private clearTimers(): void {
+    if (this.reconnectTimer !== null) {
+      window.clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+    if (this.heartbeatTimer !== null) {
+      window.clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+    this.clearPendingBid();
+  }
+
+  private scheduleReconnect(): void {
+    if (this.manualClose || this.reconnectTimer !== null) return;
+    this.callbacks.onStatus('RECONNECTING');
+    const baseMs = Math.min(15_000, 1000 * Math.pow(2, Math.min(this.reconnectAttempt, 4)));
+    const jitterMs = Math.floor(Math.random() * 400);
+    this.reconnectAttempt += 1;
+    this.reconnectTimer = window.setTimeout(() => {
+      this.reconnectTimer = null;
+      if (!this.manualClose) {
+        this.openSocket(true);
+      }
+    }, baseMs + jitterMs);
   }
 
   private openSocket(isReconnect: boolean): void {
     if (this.ws) {
       try {
+        this.ws.onclose = null;
         this.ws.close();
       } catch {
         // ignore
       }
+      this.ws = null;
     }
+    if (this.heartbeatTimer !== null) {
+      window.clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+
     this.callbacks.onStatus(isReconnect ? 'RECONNECTING' : 'CONNECTING');
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const url = `${protocol}//${window.location.host}/ws/auction`;
@@ -53,15 +109,22 @@ export class MultiplayerClient {
 
     ws.onopen = () => {
       this.callbacks.onStatus('CONNECTED');
-      ws.send(
-        JSON.stringify({
-          type: 'room:join',
-          roomCode: this.roomCode,
-          clientId: this.clientId,
-          username: this.username,
-          franchiseId: this.desiredFranchiseId,
-        })
-      );
+      const joinPayload: Record<string, unknown> = {
+        type: 'room:join',
+        roomCode: this.roomCode,
+        username: this.username,
+        franchiseId: this.desiredFranchiseId,
+      };
+      if (this.sessionToken) {
+        joinPayload.token = this.sessionToken;
+      }
+      ws.send(JSON.stringify(joinPayload));
+
+      this.heartbeatTimer = window.setInterval(() => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify({ type: 'ping' }));
+        }
+      }, 20_000);
     };
 
     ws.onmessage = (event) => {
@@ -69,21 +132,84 @@ export class MultiplayerClient {
         const msg = JSON.parse(event.data as string) as {
           type: string;
           state?: AuctionState;
+          stateVersion?: number;
           franchiseId?: FranchiseId;
+          sessionId?: string;
           message?: string;
+          requestId?: string;
         };
-        if (msg.type === 'room:joined' && msg.franchiseId) {
-          this.desiredFranchiseId = msg.franchiseId;
-          this.callbacks.onAssignedFranchise(msg.franchiseId);
+
+        if (msg.type === 'pong') return;
+
+        if (msg.type === 'auth:error') {
+          if (!this.authRefreshInFlight && this.callbacks.onAuthExpired) {
+            this.authRefreshInFlight = true;
+            void this.callbacks
+              .onAuthExpired()
+              .then((freshToken) => {
+                this.authRefreshInFlight = false;
+                if (freshToken !== undefined) {
+                  this.sessionToken = freshToken;
+                  if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    const retryPayload: Record<string, unknown> = {
+                      type: 'room:join',
+                      roomCode: this.roomCode,
+                      username: this.username,
+                      franchiseId: this.desiredFranchiseId,
+                    };
+                    if (this.sessionToken) retryPayload.token = this.sessionToken;
+                    this.ws.send(JSON.stringify(retryPayload));
+                  }
+                } else if (msg.message) {
+                  this.callbacks.onError(msg.message);
+                }
+              })
+              .catch(() => {
+                this.authRefreshInFlight = false;
+                if (msg.message) this.callbacks.onError(msg.message);
+              });
+          } else if (msg.message) {
+            this.callbacks.onError(msg.message);
+          }
+          return;
         }
+
+        if (msg.type === 'room:joined') {
+          this.reconnectAttempt = 0;
+          if (msg.sessionId) {
+            this.callbacks.onSessionSynced?.(msg.sessionId);
+          }
+          if (msg.franchiseId) {
+            this.desiredFranchiseId = msg.franchiseId;
+            this.callbacks.onAssignedFranchise(msg.franchiseId);
+          }
+        }
+
         if (msg.type === 'franchise:assigned' && msg.franchiseId) {
           this.desiredFranchiseId = msg.franchiseId;
           this.callbacks.onAssignedFranchise(msg.franchiseId);
         }
+
+        if (msg.type === 'bid:rejected') {
+          this.clearPendingBid();
+          if (msg.message) {
+            this.callbacks.onError(msg.message);
+          }
+          return;
+        }
+
         if (msg.state) {
+          if (typeof msg.stateVersion === 'number') {
+            if (msg.stateVersion < this.lastStateVersion && msg.type !== 'room:joined') {
+              return; // Ignore out-of-order older state frame
+            }
+            this.lastStateVersion = msg.stateVersion;
+          }
+          this.clearPendingBid();
           this.callbacks.onState(msg.state, msg.type);
         }
-        if ((msg.type === 'error' || msg.type === 'bid:rejected') && msg.message) {
+
+        if (msg.type === 'error' && msg.message) {
           this.callbacks.onError(msg.message);
         }
       } catch {
@@ -91,28 +217,29 @@ export class MultiplayerClient {
       }
     };
 
-    ws.onclose = () => {
-      if (this.manualClose) {
+    ws.onclose = (ev) => {
+      if (this.heartbeatTimer !== null) {
+        window.clearInterval(this.heartbeatTimer);
+        this.heartbeatTimer = null;
+      }
+      if (this.manualClose || ev.code === 4001) {
         this.callbacks.onStatus('DISCONNECTED');
         return;
       }
-      this.callbacks.onStatus('RECONNECTING');
-      this.reconnectTimer = window.setTimeout(() => {
-        if (!this.manualClose) {
-          this.openSocket(true);
-        }
-      }, 2000);
+      this.scheduleReconnect();
     };
 
     ws.onerror = () => {
-      // onclose handles reconnection
+      // onclose handles exponential backoff reconnection
     };
   }
 
-  private send(payload: Record<string, unknown>): void {
+  private send(payload: Record<string, unknown>): boolean {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(payload));
+      return true;
     }
+    return false;
   }
 
   selectFranchise(franchiseId: FranchiseId): void {
@@ -145,8 +272,20 @@ export class MultiplayerClient {
   }
 
   placeBid(amountCr?: number): void {
-    const requestId = `req_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
-    this.send({ type: 'auction:bid', amountCr, requestId });
+    // Prevent accidental rapid double-click duplicate bids while an identical bid request is in flight
+    if (this.pendingBidRequestId) {
+      return;
+    }
+    const requestId = `req_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+    const sent = this.send({ type: 'auction:bid', amountCr, requestId });
+    if (sent) {
+      this.pendingBidRequestId = requestId;
+      this.pendingBidTimer = window.setTimeout(() => {
+        this.clearPendingBid();
+      }, 1800);
+    } else {
+      this.callbacks.onError('Reconnecting to auction room... please wait a moment.');
+    }
   }
 
   pass(): void {
@@ -183,12 +322,10 @@ export class MultiplayerClient {
 
   disconnect(): void {
     this.manualClose = true;
-    if (this.reconnectTimer !== null) {
-      window.clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
-    }
+    this.clearTimers();
     if (this.ws) {
       try {
+        this.ws.onclose = null;
         this.ws.close();
       } catch {
         // ignore
@@ -198,4 +335,3 @@ export class MultiplayerClient {
     this.callbacks.onStatus('DISCONNECTED');
   }
 }
-

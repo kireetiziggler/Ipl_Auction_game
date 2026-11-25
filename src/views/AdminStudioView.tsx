@@ -38,6 +38,7 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
   useEffect(() => {
     let active = true;
     fetch('/api/admin/status', {
+      credentials: 'include',
       headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
     })
       .then((r) => r.json())
@@ -62,7 +63,11 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'fetch',
+        },
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
@@ -85,8 +90,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
     try {
       const res = await fetch('/api/admin/players', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With': 'fetch',
           Authorization: `Bearer ${adminToken}`,
         },
         body: JSON.stringify({
@@ -166,8 +173,10 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
     try {
       const res = await fetch('/api/admin/players/import', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With': 'fetch',
           Authorization: `Bearer ${adminToken}`,
         },
         body: JSON.stringify({ players: parsed }),
@@ -257,7 +266,17 @@ export const AdminStudioView: React.FC<AdminStudioViewProps> = ({
           </p>
         </div>
         <button
-          onClick={() => onAdminToken(null)}
+          onClick={() => {
+            void fetch('/api/admin/logout', {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'X-Requested-With': 'fetch',
+                ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+              },
+            }).catch(() => {});
+            onAdminToken(null);
+          }}
           className="px-3.5 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200"
         >
           Lock Studio
